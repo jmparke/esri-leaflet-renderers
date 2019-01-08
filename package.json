@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "esri-leaflet": "^2.0.0",
+    "esri-leaflet-cluster": "^2.0.0",
     "leaflet": "^1.0.0-rc.3",
     "leaflet-shape-markers": "^1.0.4"
   },

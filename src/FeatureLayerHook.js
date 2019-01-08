@@ -1,17 +1,17 @@
 import L from 'leaflet';
 import Esri from 'esri-leaflet';
+import Cluster from 'esri-leaflet-cluster';
 import classBreaksRenderer from './Renderers/ClassBreaksRenderer';
 import uniqueValueRenderer from './Renderers/UniqueValueRenderer';
 import simpleRenderer from './Renderers/SimpleRenderer';
 
-Esri.FeatureLayer.addInitHook(function () {
+function wireUpRenderers () {
   if (this.options.ignoreRenderer) {
     return;
   }
   var oldOnAdd = L.Util.bind(this.onAdd, this);
   var oldUnbindPopup = L.Util.bind(this.unbindPopup, this);
   var oldOnRemove = L.Util.bind(this.onRemove, this);
-  L.Util.bind(this.createNewLayer, this);
 
   this.onAdd = function (map) {
     this.metadata(function (error, response) {
@@ -199,4 +199,14 @@ Esri.FeatureLayer.addInitHook(function () {
     }
     rend.attachStylesToLayer(this);
   };
+}
+
+Esri.FeatureLayer.addInitHook(function () {
+  // the only method not shared with the clustered implementation
+  L.Util.bind(this.createNewLayer, this);
+  wireUpRenderers();
 });
+
+if (Cluster) {
+  Cluster.FeatureLayer.addInitHook(wireUpRenderers)
+}
